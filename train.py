@@ -1296,50 +1296,9 @@ mtransform = transforms.Compose([
 train_dataset = CustomDataset('/root/autodl-tmp/area/croimage', '/root/autodl-tmp/area/cromask', transform=transform, mtransform=mtransform)
 
 testdataset = CustomDataset('/root/autodl-tmp/tarea1/croimage', '/root/autodl-tmp/tarea1/cromask', transform=transform, mtransform=mtransform)
-
 test2dataset = CustomDataset('/root/autodl-tmp/tarea2/croimage', '/root/autodl-tmp/tarea2/cromask', transform=transform, mtransform=mtransform)
-
-test3dataset = CustomDataset('/root/autodl-tmp/tt4/croimage', '/root/autodl-tmp/tt4/cromask', transform=transform, mtransform=mtransform)
-
 val_dataset = CustomDataset('/root/autodl-tmp/val/croimage', '/root/autodl-tmp/val/cromask', transform=transform, mtransform=mtransform)
-# # 定义验证集的大小。
-# val_size = 327 
-# train_size = len(dataset) - val_size
 
-# # 创建训练集和验证集的索引。
-# train_indices = list(range(0, train_size))
-# val_indices = list(range(train_size, len(dataset)))
-
-# 使用这些索引创建训练集和验证集。
-# train_dataset = Subset(dataset, train_indices)
-# val_dataset = Subset(dataset, val_indices)
-
-
-# testdataset = CustomDataset('/root/autodl-tmp/area/cropped', '/root/autodl-tmp/area/cromask', transform=transform)
-# dataset = CustomDataset('/root/autodl-tmp/tarea/croimage', '/root/autodl-tmp/tarea/cromask', transform=transform)
-# combined_dataset = ConcatDataset([testdataset, dataset])
-# train_loader = DataLoader(combined_dataset, batch_size=1, shuffle=True)
-
-# # Splitting the dataset
-# train_size = int(0.94 * len(dataset))
-# val_size = len(dataset) - train_size
-
-# train_dataset2, val_dataset = random_split(dataset, [train_size, val_size])
-
-# # train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
-# val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False)
-# test_loader = DataLoader(testdataset, batch_size=1, shuffle=False)
-
-
-
-
-# dataset_size = len(dataset)
-
-# # 确保 train_size 和 val_size 的总和不超过 dataset_size
-
-# val_size = 327 # 设定验证集大小
-# train_dataset = dataset[:dataset_size-val_size]
-# val_dataset = dataset[dataset_size-val_size:dataset_size]
 train_loader = DataLoader(train_dataset, batch_size=24, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=24, shuffle=False)
 test_loader = DataLoader(testdataset, batch_size=24, shuffle=False)
@@ -1739,11 +1698,6 @@ lowest_val = float('inf')
 lowest_test = float('inf')
 lowest_test2 = float('inf')
 save_path = './best_modelrerere6.pth'
-save_pathval1 = './best_modelrerereval1.pth'
-save_pathval = './best_modelrerereval.pth'
-save_path3 = './best_modelrerere3.pth'
-save_path2 = './best_modelrerere2.pth'
-save_path1 = './best_modelrerere1.pth'
 epochs = 1000
 file_path = 'output_logs5.txt'  # 可以根据需要更改文件名和路径
 
@@ -1765,18 +1719,11 @@ for epoch in range(epochs):
     loss = 0.
     test3_loss = 0.0
     for images, masks in train_loader:
-
         images, masks = images.to(device), masks.to(device)
-
         optimizer.zero_grad()
-
         # out,x_c3,x_c4, maps,tokensst
         x1,x2 = model(images)
-     
-        
-    
         loss =criterion(x1, masks)+ criterion(x2, masks) 
-  
         loss.backward()
 
         # loss.backward()
@@ -1805,33 +1752,10 @@ for epoch in range(epochs):
 #     val_dice_list = []
 #     val_precision_list = []
 #     val_recall_list = []
-    
-    
-#     test_accuracy_list = []
-#     test_iou_list = []
-#     test_dice_list = []
-#     test_precision_list = []
-#     test_recall_list = []
-    
-    
-#     test2_accuracy_list = []
-#     test2_iou_list = []
-#     test2_dice_list = []
-#     test2_precision_list = []
-#     test2_recall_list = []
 #     model.eval()
-#     test_loss = 0.0
-#     test2_loss = 0.0
-#     test3_loss = 0.0
 #     val_loss = 0.0
 #     best_val = None
-#     best_test = None
-#     best_test2 = None
-#     best_test3 = None
 #     images_with_loss = []
-#     images_with_tloss = []
-#     images_with_t2loss = []
-#     images_with_t3loss = []
 #     with torch.no_grad():
 #         for images, masks in val_loader:
 #             images, masks = images.to(device), masks.to(device)
@@ -1873,20 +1797,7 @@ for epoch in range(epochs):
 
 #             recall = recall_score(masks_np, outputs_np)
 #             val_recall_list.append(recall)
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+          
 #             # 对列表按loss进行排序
 # #             images_with_loss.sort(key=lambda x: x[0])
 
@@ -1934,157 +1845,3 @@ for epoch in range(epochs):
 # #                         img = Image.fromarray(np.uint8(image.squeeze() * 255))
 # #                         img.save(f"{'/root/autodl-tmp/vmask/'}/epoch_{epoch}_batch_{i}_img_{j}.bmp")
             
-#     with torch.no_grad():
-#         for images, masks in test2_loader:
-#             images, masks = images.to(device), masks.to(device)
-#             outputs,reout = model(images)
-
-#             sigmoid_outputs = torch.sigmoid(outputs)  # 使用Sigmoid激活函数
-#             # loss = criterion(sigmoid_outputs, masks)
-#             loss =criterion(outputs, masks)+ criterion(reout, masks)
-
-
-#             # loss = dice_loss(sigmoid_outputs, masks) + sigmoid_focal_loss(sigmoid_outputs, masks, alpha=-1, gamma=0)
-#             test2_loss += loss.item()
-#             outputs = (sigmoid_outputs > 0.5).float()  # 使用0.5作为阈值
-#             average_loss = loss.item() / images.size(0) 
-#             # for img, mask, out in zip(images, masks, outputs):
-#             #     # 将每张图片及其mask和平均loss存储在列表中
-#             #     images_with_t2loss.append((average_loss, img.cpu(), mask.cpu(), out.cpu()))
-
-#             # # 遍历这个batch的每张图片和对应的loss
-#             # for img, mask, out, l in zip(images, masks, outputs, loss):
-#             #     # 将每张图片及其mask和loss存储在列表中
-#             #     images_with_t2loss.append((l.item(), img.cpu(), mask.cpu(), out.cpu()))
-            
-            
-            
-#             # 将 tensors 转为 numpy arrays 用于评估
-#             outputs_np = outputs.cpu().numpy().flatten().astype(int)
-#             masks_np = masks.cpu().numpy().flatten().astype(int)
-
-#             # 计算各项指标
-#             accuracy = accuracy_score(masks_np, outputs_np)
-#             test2_accuracy_list.append(accuracy)
-
-#             iou = jaccard_score(masks_np, outputs_np)
-#             test2_iou_list.append(iou)
-
-#             dice = f1_score(masks_np, outputs_np)
-#             test2_dice_list.append(dice)
-
-#             precision = precision_score(masks_np, outputs_np)
-#             test2_precision_list.append(precision)
-
-#             recall = recall_score(masks_np, outputs_np)
-#             test2_recall_list.append(recall)
-# #         # 对列表按loss进行排序t
-# #         images_with_t2loss.sort(key=lambda x: x[0])
-
-# #         # 保存每个epoch的最佳20张图片
-# #         t2best_20 = images_with_t2loss[:20]
-# #         t2best_images_per_epoch.append(t2best_20)
-
-# #         for idx, (_, img, mask, out) in enumerate(t2best_20):
-# #             save_image(img, f'/root/autodl-tmp/makt2/epoch_{epoch}_img_{idx}.bmp')
-# #             save_image(mask, f'/root/autodl-tmp/makt2/epoch_{epoch}_mask_{idx}.bmp')
-# #             save_image(out, f'/root/autodl-tmp/makt2/epoch_{epoch}_output_{idx}.bmp')
-#         if test2_loss < lowest_test2:
-#             lowest_test2 = test2_loss
-#             test2_lowest_loss = epoch
-#             # images_test_save = images.cpu().detach().numpy()  # Save the images from the epoch with the lowest loss
-#             torch.save(model.state_dict(), save_path2)
-
-# #         if epoch == test2_lowest_loss:
-# #             # save_image(torch.sigmoid(outputs), './test_best_outputrerere8.bmp')
-            
-            
-# #             with torch.no_grad():
-# #                 for i, (images, masks) in enumerate(test2_loader):
-# #                     images, masks = images.to(device), masks.to(device)
-# #                     outputs, _, _, _, _, _ , _ = model(images)
-# #                     outputs = torch.sigmoid(outputs) > 0.5
-# #                     save_image(torch.sigmoid(outputs), f'/root/autodl-tmp/tmask2/img_{i}.bmp')
-                    
-                    
-                    
-                    
-            
-            
-#     with torch.no_grad():
-#         for images, masks in test_loader:
-#             images, masks = images.to(device), masks.to(device)
-#             outputs,reout = model(images)
-
-#             sigmoid_outputs = torch.sigmoid(outputs)  # 使用Sigmoid激活函数
-#             # loss = criterion(sigmoid_outputs, masks)
-#             loss =criterion(outputs, masks)+ criterion(reout, masks)
-
-
-#             # loss = dice_loss(sigmoid_outputs, masks) + sigmoid_focal_loss(sigmoid_outputs, masks, alpha=-1, gamma=0)
-#             test_loss += loss.item()
-#             outputs = (sigmoid_outputs > 0.5).float()  # 使用0.5作为阈值
-#             average_loss = loss.item() / images.size(0) 
-#             # for img, mask, out in zip(images, masks, outputs):
-#             #     # 将每张图片及其mask和平均loss存储在列表中
-#             #     images_with_tloss.append((average_loss, img.cpu(), mask.cpu(), out.cpu()))
-
-#             # # 遍历这个batch的每张图片和对应的loss
-#             # for img, mask, out, l in zip(images, masks, outputs, loss):
-#             #     # 将每张图片及其mask和loss存储在列表中
-#             #     images_with_tloss.append((l.item(), img.cpu(), mask.cpu(), out.cpu()))
-            
-            
-            
-#             # 将 tensors 转为 numpy arrays 用于评估
-#             outputs_np = outputs.cpu().numpy().flatten().astype(int)
-#             masks_np = masks.cpu().numpy().flatten().astype(int)
-
-#             # 计算各项指标
-#             accuracy = accuracy_score(masks_np, outputs_np)
-#             test_accuracy_list.append(accuracy)
-
-#             iou = jaccard_score(masks_np, outputs_np)
-#             test_iou_list.append(iou)
-
-#             dice = f1_score(masks_np, outputs_np)
-#             test_dice_list.append(dice)
-
-#             precision = precision_score(masks_np, outputs_np)
-#             test_precision_list.append(precision)
-
-#             recall = recall_score(masks_np, outputs_np)
-#             test_recall_list.append(recall)
-# #         # 对列表按loss进行排序t
-# #         images_with_tloss.sort(key=lambda x: x[0])
-
-# #         # 保存每个epoch的最佳20张图片
-# #         tbest_20 = images_with_tloss[:20]
-# #         tbest_images_per_epoch.append(tbest_20)
-
-# #         for idx, (_, img, mask, out) in enumerate(tbest_20):
-# #             save_image(img, f'/root/autodl-tmp/makt5/epoch_{epoch}_img_{idx}.bmp')
-# #             save_image(mask, f'/root/autodl-tmp/makt5/epoch_{epoch}_mask_{idx}.bmp')
-# #             save_image(out, f'/root/autodl-tmp/makt5/epoch_{epoch}_output_{idx}.bmp')
-#         if test_loss < lowest_test:
-#             lowest_test = test_loss
-#             test_lowest_loss = epoch
-#             # images_test_save = images.cpu().detach().numpy()  # Save the images from the epoch with the lowest loss
-#             torch.save(model.state_dict(), save_path1)
-
-# #         if epoch == test_lowest_loss:
-# #             # save_image(torch.sigmoid(outputs), './test_best_outputrerere8.bmp')
-            
-            
-# #             with torch.no_grad():
-# #                 for i, (images, masks) in enumerate(test_loader):
-# #                     images, masks = images.to(device), masks.to(device)
-# #                     outputs, _, _, _, _, _ , _ = model(images)
-# #                     outputs = torch.sigmoid(outputs) > 0.5
-# #                     save_image(torch.sigmoid(outputs), f'/root/autodl-tmp/tmask/img_{i}.bmp')
-#                     # save_image(torch.sigmoid(outputs), '/root/autodl-tmp/tmask/img_{i}.bmp')
-#                     # images_np = images.cpu().numpy()  # 转换为numpy数组
-#                     # for j, image in enumerate(images_np):
-#                     #     img = Image.fromarray(np.uint8(image.squeeze() * 255))
-#                     #     img.save(f"{'/root/autodl-tmp/tmask/'}/epoch_{epoch}_batch_{i}_img_{j}.bmp")
-#             # save_images(images_test_save, epoch, '/root/autodl-tmp/tmask/')
